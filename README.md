@@ -1,2 +1,5 @@
 # java-http-types
-Java types for HTTP request and response objects
+[![Build Status](https://github.com/Meeshkan/java-http-types/workflows/Java%20CI/badge.svg)](https://github.com/Meeshkan/java-http-types/actions?query=workflow%3A%22Java+CI%22)
+[![MIT licensed](http://img.shields.io/:license-MIT-blue.svg)](LICENSE.txt)
+
+Types for HTTP requests and responses as defined by the [HTTP types](https://github.com/Meeshkan/http-types/) project.
