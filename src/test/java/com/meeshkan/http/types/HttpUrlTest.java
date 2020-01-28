@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
+import java.util.*;
 
 public class HttpUrlTest {
 
@@ -31,6 +31,23 @@ public class HttpUrlTest {
         Assertions.assertEquals(HttpProtocol.HTTPS, url.getProtocol());
         Assertions.assertEquals("example.com", url.getHost());
         Assertions.assertEquals("/my/path", url.getPathname());
+        Assertions.assertEquals("myvalue", url.getFirstQueryParameter("mykey"));
+        Assertions.assertEquals("v1", url.getFirstQueryParameter("n"));
+        Assertions.assertEquals(Arrays.asList("v1", "v2"), url.getAllQueryParameters("n"));
+    }
+
+    @Test
+    void queryParametersMultivalued() {
+        Map<String, List<String>> queryParameters = new HashMap<>();
+        queryParameters.put("mykey", Collections.singletonList("myvalue"));
+        queryParameters.put("n", Arrays.asList("v1", "v2"));
+        HttpUrl url = new HttpUrl.Builder()
+                .protocol(HttpProtocol.HTTP)
+                .host("example.com")
+                .pathname("/my/path")
+                .queryParametersMultivalued(queryParameters)
+                .build();
+
         Assertions.assertEquals("myvalue", url.getFirstQueryParameter("mykey"));
         Assertions.assertEquals("v1", url.getFirstQueryParameter("n"));
         Assertions.assertEquals(Arrays.asList("v1", "v2"), url.getAllQueryParameters("n"));

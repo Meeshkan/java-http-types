@@ -2,10 +2,16 @@ package com.meeshkan.http.types;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -92,7 +98,25 @@ public class HttpExchangeTest {
 
     @Test
     void parseJsonl() throws Exception {
-        List<HttpExchange> exchanges = HttpExchange.parseJsonl(getClass().getResourceAsStream("/sample.jsonl")).collect(Collectors.toList());
+        Supplier<InputStream> input = () -> getClass().getResourceAsStream("/sample.jsonl");
+
+        StringBuilder buffer = new StringBuilder();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(input.get(), StandardCharsets.UTF_8));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            if (buffer.length() > 0) {
+                buffer.append('\n');
+            }
+            buffer.append(line);
+        }
+
+        testJsonlStream(HttpExchange.parseJsonl(buffer.toString()));
+        testJsonlStream(HttpExchange.parseJsonl(new InputStreamReader(input.get(), StandardCharsets.UTF_8)));
+        testJsonlStream(HttpExchange.parseJsonl(input.get()));
+    }
+
+    private void testJsonlStream(Stream<HttpExchange> stream) {
+        List<HttpExchange> exchanges = stream.collect(Collectors.toList());
         assertEquals(2, exchanges.size());
         assertEquals("/user/repos1", exchanges.get(0).getRequest().getUrl().getPathname());
         assertEquals(HttpProtocol.HTTP, exchanges.get(0).getRequest().getUrl().getProtocol());
