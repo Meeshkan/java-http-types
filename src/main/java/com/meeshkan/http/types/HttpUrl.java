@@ -1,6 +1,9 @@
 package com.meeshkan.http.types;
 
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -67,6 +70,14 @@ public class HttpUrl {
         return queryParameters.get(parameterName);
     }
 
+    public URL asUrl() {
+        try {
+            return new URL(protocol.name().toLowerCase(), host, getPath());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static class Builder {
         private HttpProtocol protocol;
         private String host;
@@ -86,6 +97,26 @@ public class HttpUrl {
         public Builder pathname(String pathname) {
             this.pathname = pathname;
             return this;
+        }
+
+        public Builder path(String path) {
+            try {
+                URL asUrl = new URL("file:" + path);
+                pathname(asUrl.getPath());
+                if (asUrl.getQuery() != null) {
+                    final String[] pairs = asUrl.getQuery().split("&");
+                    for (String pair : pairs) {
+                        final int idx = pair.indexOf("=");
+                        final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "utf-8") : pair;
+                        final String value = idx > 0 && pair.length() > idx + 1 ? URLDecoder.decode(pair.substring(idx + 1), "utf-8") : null;
+                        addQueryParameter(key, value);
+                    }
+                }
+                return this;
+            } catch (MalformedURLException | UnsupportedEncodingException e) {
+                // FIXME: Avoid hack.
+                throw new RuntimeException(e);
+            }
         }
 
         public Builder queryParameters(Map<String, String> queryParameters) {
@@ -108,6 +139,20 @@ public class HttpUrl {
             List<String> currentList = queryParameters.computeIfAbsent(key, k -> new ArrayList<>());
             currentList.add(value);
             return this;
+        }
+
+        public Builder url(URL url) {
+            if (!("http".equals(url.getProtocol()) || "https".equals(url.getProtocol()))) {
+                throw new IllegalArgumentException("Invalid protocol (only 'http' and 'https' supported): " + url.getProtocol());
+            }
+
+            String path = url.getPath();
+            if (url.getQuery() != null) {
+                path += "?" + url.getQuery();
+            }
+            return this.protocol(HttpProtocol.valueOf(url.getProtocol().toUpperCase()))
+                    .host(url.getHost())
+                    .path(path);
         }
 
         public HttpUrl build() {

@@ -1,11 +1,11 @@
 package com.meeshkan.http.types;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.net.MalformedURLException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class HttpExchangeTest {
 
     @Test
-    void basicUsage() throws MalformedURLException {
+    void basicUsage() {
         HttpExchange exchange = new HttpExchange.Builder()
                 .request(new HttpRequest.Builder()
                         .headers(new HttpHeaders.Builder()
@@ -90,4 +90,15 @@ public class HttpExchangeTest {
         assertEquals("1999", exchange.getResponse().getHeaders().getFirst("content-length"));
     }
 
+    @Test
+    void parseJsonl() throws Exception {
+        List<HttpExchange> exchanges = HttpExchange.parseJsonl(getClass().getResourceAsStream("/sample.jsonl")).collect(Collectors.toList());
+        assertEquals(2, exchanges.size());
+        assertEquals("/user/repos1", exchanges.get(0).getRequest().getUrl().getPathname());
+        assertEquals(HttpProtocol.HTTP, exchanges.get(0).getRequest().getUrl().getProtocol());
+        assertEquals(HttpMethod.GET, exchanges.get(0).getRequest().getMethod());
+        assertEquals("/user/repos2", exchanges.get(1).getRequest().getUrl().getPathname());
+        assertEquals(HttpProtocol.HTTPS, exchanges.get(1).getRequest().getUrl().getProtocol());
+        assertEquals(HttpMethod.POST, exchanges.get(1).getRequest().getMethod());
+    }
 }

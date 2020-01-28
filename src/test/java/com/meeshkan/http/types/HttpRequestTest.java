@@ -2,7 +2,6 @@ package com.meeshkan.http.types;
 
 import org.junit.jupiter.api.Test;
 
-import java.net.MalformedURLException;
 import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -10,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class HttpRequestTest {
 
     @Test
-    void httpRequest() throws MalformedURLException {
+    void httpRequest() {
         HttpRequest request = new HttpRequest.Builder()
                 .headers(new HttpHeaders.Builder()
                         .add("header", "value")

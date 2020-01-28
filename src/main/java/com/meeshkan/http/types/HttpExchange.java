@@ -4,13 +4,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLDecoder;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Spliterator;
+import java.util.Spliterators;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * A HTTP request and response pair.
@@ -32,11 +33,25 @@ public final class HttpExchange {
         this.response = response;
     }
 
+    public static HttpExchange fromJson(String in) throws IOException {
+        return fromJson(new StringReader(in));
+    }
+
     public static HttpExchange fromJson(InputStream in) throws IOException {
+        return fromJson(new InputStreamReader(in, StandardCharsets.UTF_8));
+    }
+
+    public static HttpExchange fromJson(Reader reader) throws IOException {
         StringBuilder buffer = new StringBuilder();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
+        BufferedReader bufferedReader;
+        if (reader instanceof BufferedReader) {
+            bufferedReader = (BufferedReader) reader;
+        } else {
+            bufferedReader = new BufferedReader(reader);
+        }
+
         String line;
-        while ((line = reader.readLine()) != null) {
+        while ((line = bufferedReader.readLine()) != null) {
             buffer.append(line).append('\n');
         }
 
@@ -77,15 +92,7 @@ public final class HttpExchange {
             urlBuilder.pathname(pathnameString);
         } catch (JSONException e1) {
             String path = requestObject.getString("path");
-            URL asUrl = new URL("file:" + path);
-            urlBuilder.pathname(asUrl.getPath());
-            final String[] pairs = asUrl.getQuery().split("&");
-            for (String pair : pairs) {
-                final int idx = pair.indexOf("=");
-                final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "utf-8") : pair;
-                final String value = idx > 0 && pair.length() > idx + 1 ? URLDecoder.decode(pair.substring(idx + 1), "utf-8") : null;
-                urlBuilder.addQueryParameter(key, value);
-            }
+            urlBuilder.path(path);
         }
         requestBuilder.url(urlBuilder.build());
 
@@ -113,6 +120,53 @@ public final class HttpExchange {
                 .request(requestBuilder.build())
                 .response(responseBuilder.build())
                 .build();
+    }
+
+    static Stream<HttpExchange> parseJsonl(String jsonl) throws IOException {
+        return parseJsonl(new StringReader(jsonl));
+    }
+
+    static Stream<HttpExchange> parseJsonl(InputStream in) throws IOException {
+        return parseJsonl(new InputStreamReader(in, StandardCharsets.UTF_8));
+    }
+
+    static Stream<HttpExchange> parseJsonl(Reader reader) throws IOException {
+        BufferedReader bufferedReader;
+        if (reader instanceof BufferedReader) {
+            bufferedReader = (BufferedReader) reader;
+        } else {
+            bufferedReader = new BufferedReader(reader);
+        }
+
+        Iterator<HttpExchange> exchangeIterator = new Iterator<HttpExchange>() {
+            private String nextLine;
+
+            {
+                nextLine = bufferedReader.readLine();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return nextLine != null;
+            }
+
+            @Override
+            public HttpExchange next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                try {
+                    HttpExchange parsedExchange = HttpExchange.fromJson(nextLine);
+                    nextLine = bufferedReader.readLine();
+                    return parsedExchange;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        };
+
+        Spliterator<HttpExchange> spliterator = Spliterators.spliteratorUnknownSize(exchangeIterator, Spliterator.NONNULL);
+        return StreamSupport.stream(spliterator, false);
     }
 
     public static class Builder {

@@ -82,7 +82,7 @@ public class HttpHeaders {
          * @param headerName   the header name
          * @param headerValues the header values
          */
-        public HttpHeaders.Builder addAll(@NotNull  String headerName, @NotNull Collection<String> headerValues) {
+        public HttpHeaders.Builder addAll(@NotNull String headerName, @NotNull Collection<String> headerValues) {
             headerName = headerName.toLowerCase();
             List<String> list = headerMap.computeIfAbsent(headerName, k -> new ArrayList<>());
             list.addAll(headerValues);
