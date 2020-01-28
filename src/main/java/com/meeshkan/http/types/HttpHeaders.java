@@ -1,5 +1,6 @@
 package com.meeshkan.http.types;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -22,7 +23,8 @@ public class HttpHeaders {
      * @return the first header value, or null if none
      */
     @Nullable
-    public String getFirst(String headerName) {
+    public String getFirst(@NotNull String headerName) {
+        headerName = headerName.toLowerCase();
         List<String> list = headerMap.get(headerName);
         if (list == null || list.isEmpty()) {
             return null;
@@ -37,7 +39,8 @@ public class HttpHeaders {
      * @return an immutable list of header values, or null if none
      */
     @Nullable
-    public List<String> getAll(String headerName) {
+    public List<String> getAll(@NotNull String headerName) {
+        headerName = headerName.toLowerCase();
         List<String> list = headerMap.get(headerName);
         if (list == null) {
             return null;
@@ -68,7 +71,8 @@ public class HttpHeaders {
          * @param headerName  the header name
          * @param headerValue the header value
          */
-        public HttpHeaders.Builder add(String headerName, String headerValue) {
+        public HttpHeaders.Builder add(@NotNull String headerName, @NotNull String headerValue) {
+            headerName = headerName.toLowerCase();
             List<String> list = headerMap.computeIfAbsent(headerName, k -> new ArrayList<>());
             list.add(headerValue);
             return this;
@@ -80,7 +84,8 @@ public class HttpHeaders {
          * @param headerName   the header name
          * @param headerValues the header values
          */
-        public HttpHeaders.Builder addAll(String headerName, Collection<String> headerValues) {
+        public HttpHeaders.Builder addAll(@NotNull  String headerName, @NotNull Collection<String> headerValues) {
+            headerName = headerName.toLowerCase();
             List<String> list = headerMap.computeIfAbsent(headerName, k -> new ArrayList<>());
             list.addAll(headerValues);
             return this;

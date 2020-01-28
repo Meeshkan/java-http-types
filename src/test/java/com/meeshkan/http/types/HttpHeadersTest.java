@@ -18,6 +18,7 @@ public class HttpHeadersTest {
                 .build();
 
         assertEquals("value", headers.getFirst("header"));
+        assertEquals("value", headers.getFirst("Header"));
         assertEquals(singletonList("value"), headers.getAll("header"));
         assertEquals("value1", headers.getFirst("header1"));
         assertEquals(asList("value1", "value2"), headers.getAll("header1"));
