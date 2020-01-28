@@ -8,20 +8,20 @@ public class HttpResponseTest {
     @Test
     void equals() {
         HttpResponse response1 = new HttpResponse.Builder()
-                .setBody("body")
-                .setStatusCode(200)
+                .body("body")
+                .statusCode(200)
                 .build();
         HttpResponse response2 = new HttpResponse.Builder()
-                .setBody("body")
-                .setStatusCode(200)
+                .body("body")
+                .statusCode(200)
                 .build();
         HttpResponse response3 = new HttpResponse.Builder()
-                .setBody("...")
-                .setStatusCode(200)
+                .body("...")
+                .statusCode(200)
                 .build();
         HttpResponse response4 = new HttpResponse.Builder()
-                .setBody("body")
-                .setStatusCode(201)
+                .body("body")
+                .statusCode(201)
                 .build();
 
         Assertions.assertEquals(response1, response2);

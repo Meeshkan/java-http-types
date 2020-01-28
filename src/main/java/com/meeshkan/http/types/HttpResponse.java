@@ -3,7 +3,6 @@ package com.meeshkan.http.types;
 import java.util.Objects;
 
 public final class HttpResponse {
-
     private final String body;
     private final int statusCode;
     private final HttpHeaders headers;
@@ -42,22 +41,21 @@ public final class HttpResponse {
     }
 
     public static class Builder {
-
         private String body;
         private int statusCode;
         private HttpHeaders headers;
 
-        public Builder setBody(String body) {
+        public Builder body(String body) {
             this.body = body;
             return this;
         }
 
-        public Builder setStatusCode(int statusCode) {
+        public Builder statusCode(int statusCode) {
             this.statusCode = statusCode;
             return this;
         }
 
-        public Builder setHeaders(HttpHeaders headers) {
+        public Builder headers(HttpHeaders headers) {
             this.headers = headers;
             return this;
         }

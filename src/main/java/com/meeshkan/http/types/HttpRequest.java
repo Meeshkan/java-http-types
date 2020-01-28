@@ -1,36 +1,30 @@
 package com.meeshkan.http.types;
 
-import java.net.URL;
 import java.util.Objects;
 
 public final class HttpRequest {
-
-    private final URL url;
+    private final HttpUrl url;
     private final HttpMethod method;
     private final HttpHeaders headers;
     private final String body;
 
+    public HttpUrl getUrl() {
+        return url;
+    }
+
     public HttpMethod getMethod() {
         return method;
-    }
-
-    public HttpProtocol getProtocol() {
-        return "http".equals(url.getProtocol()) ? HttpProtocol.HTTP : HttpProtocol.HTTPS;
-    }
-
-    public String getBody() {
-        return body;
-    }
-
-    public URL getUrl() {
-        return url;
     }
 
     public HttpHeaders getHeaders() {
         return headers;
     }
 
-    public HttpRequest(URL url, HttpMethod method, HttpHeaders headers, String body) {
+    public String getBody() {
+        return body;
+    }
+
+    public HttpRequest(HttpUrl url, HttpMethod method, HttpHeaders headers, String body) {
         this.url = url;
         this.method = method;
         this.headers = headers;
@@ -54,28 +48,27 @@ public final class HttpRequest {
     }
 
     public static class Builder {
-
-        private URL url;
+        private HttpUrl url;
         private HttpMethod method;
         private HttpHeaders headers;
         private String body;
 
-        public HttpRequest.Builder setBody(String body) {
+        public HttpRequest.Builder body(String body) {
             this.body = body;
             return this;
         }
 
-        public HttpRequest.Builder setUrl(URL url) {
+        public HttpRequest.Builder url(HttpUrl url) {
             this.url = url;
             return this;
         }
 
-        public HttpRequest.Builder setHeaders(HttpHeaders headers) {
+        public HttpRequest.Builder headers(HttpHeaders headers) {
             this.headers = headers;
             return this;
         }
 
-        public HttpRequest.Builder setMethod(HttpMethod method) {
+        public HttpRequest.Builder method(HttpMethod method) {
             this.method = method;
             return this;
         }

@@ -3,7 +3,7 @@ package com.meeshkan.http.types;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
-import java.net.URL;
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -12,20 +12,25 @@ public class HttpExchangeTest {
     @Test
     void basicUsage() throws MalformedURLException {
         HttpExchange exchange = new HttpExchange.Builder()
-                .setRequest(new HttpRequest.Builder()
-                        .setHeaders(new HttpHeaders.Builder()
+                .request(new HttpRequest.Builder()
+                        .headers(new HttpHeaders.Builder()
                                 .add("RequestHeader", "value")
                                 .build())
-                        .setMethod(HttpMethod.GET)
-                        .setUrl(new URL("http://example.com/path?param=value"))
-                        .setBody("requestBody")
+                        .method(HttpMethod.GET)
+                        .url(new HttpUrl.Builder()
+                                .protocol(HttpProtocol.HTTP)
+                                .host("example.com")
+                                .pathname("/path")
+                                .queryParameters(Collections.singletonMap("param", "value"))
+                                .build())
+                        .body("requestBody")
                         .build())
-                .setResponse(new HttpResponse.Builder()
-                        .setHeaders(new HttpHeaders.Builder()
+                .response(new HttpResponse.Builder()
+                        .headers(new HttpHeaders.Builder()
                                 .add("ResponseHeader", "value")
                                 .build())
-                        .setStatusCode(200)
-                        .setBody("responseBody")
+                        .statusCode(200)
+                        .body("responseBody")
                         .build())
                 .build();
 
@@ -36,8 +41,9 @@ public class HttpExchangeTest {
 
     @Test
     void loadFromJson() throws Exception {
-        HttpExchange exchange = HttpExchange.fromJson(getClass().getResourceAsStream("/sample.json"));
+        HttpExchange exchange = HttpExchange.fromJson(getClass().getResourceAsStream("/sample-with-pathname-and-query.json"));
         assertEquals(HttpMethod.GET, exchange.getRequest().getMethod());
+        assertEquals("myvalue", exchange.getRequest().getUrl().getFirstQueryParameter("mykey"));
         assertEquals("*/*", exchange.getRequest().getHeaders().getFirst("accept"));
         assertEquals("Mozilla/5.0 (pc-x86_64-linux-gnu) Siege/3.0.8", exchange.getRequest().getHeaders().getFirst("user-agent"));
 

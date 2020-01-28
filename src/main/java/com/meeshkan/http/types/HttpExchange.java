@@ -1,5 +1,7 @@
 package com.meeshkan.http.types;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -12,7 +14,6 @@ import java.nio.charset.StandardCharsets;
  * A HTTP request and response pair.
  */
 public final class HttpExchange {
-
     private final HttpRequest request;
     private final HttpResponse response;
 
@@ -47,16 +48,43 @@ public final class HttpExchange {
         String protocolString = requestObject.getString("protocol");
         HttpProtocol protocolEnum = HttpProtocol.valueOf(protocolString.toUpperCase());
 
+        HttpRequest.Builder requestBuilder = new HttpRequest.Builder()
+                .method(methodEnum);
+
+        HttpUrl.Builder urlBuilder = new HttpUrl.Builder();
+        urlBuilder.protocol(protocolEnum);
+        try {
+            String pathnameString = requestObject.getString("pathname");
+            try {
+                JSONObject queryObject = requestObject.getJSONObject("query");
+                for (String queryParameter : queryObject.keySet()) {
+                    try {
+                        String queryValue = queryObject.getString(queryParameter);
+                        urlBuilder.addQueryParameter(queryParameter, queryValue);
+                    } catch (JSONException e) {
+                        // Should be an array.
+                        JSONArray queryArray = queryObject.getJSONArray(queryParameter);
+                        for (Object queryValue : queryArray) {
+                            urlBuilder.addQueryParameter(queryParameter, (String) queryValue);
+                        }
+                    }
+                }
+            } catch (JSONException e) {
+                // Ignore, query not mandatory.
+            }
+            urlBuilder.pathname(pathnameString);
+        } catch (JSONException e1) {
+            String path = requestObject.getString("path");
+        }
+        requestBuilder.url(urlBuilder.build());
+
         HttpHeaders.Builder requestHeaders = new HttpHeaders.Builder();
         JSONObject requestHeadersObject = requestObject.getJSONObject("headers");
         for (String headerName : requestHeadersObject.keySet()) {
             String headerValue = requestHeadersObject.getString(headerName);
             requestHeaders.add(headerName, headerValue);
         }
-
-        HttpRequest.Builder requestBuilder = new HttpRequest.Builder()
-                .setMethod(methodEnum)
-                .setHeaders(requestHeaders.build());
+        requestBuilder.headers(requestHeaders.build());
 
         HttpHeaders.Builder responseHeaders = new HttpHeaders.Builder();
         JSONObject responseHeadersObject = responseObject.getJSONObject("headers");
@@ -66,13 +94,13 @@ public final class HttpExchange {
         }
 
         HttpResponse.Builder responseBuilder = new HttpResponse.Builder()
-                .setStatusCode(responseObject.getInt("statusCode"))
-                .setHeaders(responseHeaders.build())
-                .setBody(responseObject.getString("body"));
+                .statusCode(responseObject.getInt("statusCode"))
+                .headers(responseHeaders.build())
+                .body(responseObject.getString("body"));
 
         return new HttpExchange.Builder()
-                .setRequest(requestBuilder.build())
-                .setResponse(responseBuilder.build())
+                .request(requestBuilder.build())
+                .response(responseBuilder.build())
                 .build();
     }
 
@@ -81,12 +109,12 @@ public final class HttpExchange {
         private HttpRequest request;
         private HttpResponse response;
 
-        public HttpExchange.Builder setRequest(HttpRequest request) {
+        public HttpExchange.Builder request(HttpRequest request) {
             this.request = request;
             return this;
         }
 
-        public HttpExchange.Builder setResponse(HttpResponse response) {
+        public HttpExchange.Builder response(HttpResponse response) {
             this.response = response;
             return this;
         }

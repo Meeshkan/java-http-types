@@ -1,0 +1,20 @@
+{
+  "request": {
+    "protocol": "http",
+    "method": "get",
+    "headers": {
+      "accept": "*/*",
+      "user-agent": "Mozilla/5.0 (pc-x86_64-linux-gnu) Siege/3.0.8"
+    },
+    "path": "/user/repos?mykey=myvalue&anotherkey=value1&anotherkey=value2",
+    "host": "example.com"
+  },
+  "response": {
+    "statusCode": 200,
+    "body": "...",
+    "headers": {
+      "content-length": "1999",
+      "content-type": "text/html; charset=utf-8"
+    }
+  }
+}

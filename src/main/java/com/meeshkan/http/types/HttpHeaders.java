@@ -9,7 +9,6 @@ import java.util.*;
  * A set of HTTP request or response headers.
  */
 public class HttpHeaders {
-
     private final Map<String, List<String>> headerMap;
 
     private HttpHeaders(Map<String, List<String>> headerMap) {
@@ -62,7 +61,6 @@ public class HttpHeaders {
     }
 
     public static class Builder {
-
         private final Map<String, List<String>> headerMap = new HashMap<>();
 
         /**

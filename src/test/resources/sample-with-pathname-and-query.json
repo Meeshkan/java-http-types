@@ -6,8 +6,11 @@
       "accept": "*/*",
       "user-agent": "Mozilla/5.0 (pc-x86_64-linux-gnu) Siege/3.0.8"
     },
-    "path": "/user/repos",
     "pathname": "/user/repos",
+    "query": {
+      "mykey": "myvalue",
+      "anotherkey": ["value1", "value2"]
+    },
     "host": "example.com"
   },
   "response": {
