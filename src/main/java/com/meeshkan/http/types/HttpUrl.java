@@ -1,5 +1,7 @@
 package com.meeshkan.http.types;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.*;
 
 public class HttpUrl {
@@ -12,7 +14,7 @@ public class HttpUrl {
         this.protocol = protocol;
         this.host = host;
         this.pathname = pathname;
-        this.queryParameters = queryParameters;
+        this.queryParameters = queryParameters == null ? Collections.emptyMap() : queryParameters;
     }
 
     public HttpProtocol getProtocol() {
@@ -25,6 +27,28 @@ public class HttpUrl {
 
     public String getPathname() {
         return pathname;
+    }
+
+    public String getPath() {
+        StringBuilder result = new StringBuilder();
+        result.append(pathname);
+        if (!queryParameters.isEmpty()) {
+            result.append('?');
+            try {
+                for (Map.Entry<String, List<String>> entry : queryParameters.entrySet()) {
+                    String encodedName = URLEncoder.encode(entry.getKey(), "utf-8");
+                    for (String value : entry.getValue()) {
+                        String encodedValue = URLEncoder.encode(value, "utf-8");
+                        result.append(encodedName).append('=').append(encodedValue);
+                    }
+                }
+            } catch (UnsupportedEncodingException e) {
+                // Should never happen, "utf-8" is always a supported charset.
+                // When targeting java 10 one can use URLEncoder.encode(s, StandardCharsets.UTF_8) which do not throw.
+                throw new RuntimeException(e);
+            }
+        }
+        return result.toString();
     }
 
     public Map<String, List<String>> getQueryParameters() {

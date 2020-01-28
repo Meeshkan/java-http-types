@@ -8,6 +8,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -75,6 +77,15 @@ public final class HttpExchange {
             urlBuilder.pathname(pathnameString);
         } catch (JSONException e1) {
             String path = requestObject.getString("path");
+            URL asUrl = new URL("file:" + path);
+            urlBuilder.pathname(asUrl.getPath());
+            final String[] pairs = asUrl.getQuery().split("&");
+            for (String pair : pairs) {
+                final int idx = pair.indexOf("=");
+                final String key = idx > 0 ? URLDecoder.decode(pair.substring(0, idx), "utf-8") : pair;
+                final String value = idx > 0 && pair.length() > idx + 1 ? URLDecoder.decode(pair.substring(idx + 1), "utf-8") : null;
+                urlBuilder.addQueryParameter(key, value);
+            }
         }
         requestBuilder.url(urlBuilder.build());
 
