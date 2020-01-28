@@ -1,4 +1,8 @@
-apply plugin: 'java'
+plugins {
+    id "com.jfrog.bintray" version "1.8.4"
+    id 'java'
+    id 'maven-publish'
+}
 
 repositories {
     jcenter()
@@ -15,4 +19,73 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+def pomConfig = {
+    licenses {
+        license {
+            name 'The MIT License'
+            url 'https://opensource.org/licenses/MIT'
+            distribution 'repo'
+        }
+    }
+    developers {
+        developer {
+            id 'fornwall'
+            name 'Fredrik Fornwall'
+            email 'fredrik@fornwall.net'
+        }
+    }
+    scm {
+        url "https://github.com/meeshkan/java-http-types"
+    }
+}
+
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+
+publishing {
+    publications {
+        MyPublication(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            groupId 'com.meeshkan'
+            artifactId 'http-types'
+            version this.version
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Java types for HTTP request and response objects.')
+                root.appendNode('name', 'java-http-types')
+                root.appendNode('url', 'https://github.com/meeshkan/java-http-types')
+                root.children().last() + pomConfig
+            }
+        }
+    }
+}
+
+bintray {
+    user = System.getenv('BINTRAY_USER')
+    key = System.getenv('BINTRAY_API_KEY')
+    publications = ['MyPublication']
+    pkg {
+        repo = 'maven'
+        name = 'http-types'
+        labels = ['java', 'http', 'types', 'http-types', 'json']
+        userOrg = 'meeshkan'
+        licenses = ['MIT']
+        vcsUrl = 'https://github.com/Meeshkan/java-http-types.git'
+        version {
+            gpg {
+                sign = true
+            }
+        }
+    }
 }
