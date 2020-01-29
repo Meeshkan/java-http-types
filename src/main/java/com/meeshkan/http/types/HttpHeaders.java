@@ -47,6 +47,10 @@ public class HttpHeaders {
         return Collections.unmodifiableList(list);
     }
 
+    public Map<String, List<String>> asMap() {
+        return headerMap;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

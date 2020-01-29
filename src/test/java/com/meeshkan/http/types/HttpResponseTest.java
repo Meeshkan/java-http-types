@@ -1,7 +1,9 @@
 package com.meeshkan.http.types;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class HttpResponseTest {
 
@@ -24,10 +26,10 @@ public class HttpResponseTest {
                 .statusCode(201)
                 .build();
 
-        Assertions.assertEquals(response1, response2);
-        Assertions.assertNotEquals(response1, response3);
-        Assertions.assertNotEquals(response1, response4);
-        Assertions.assertNotEquals(response3, response4);
+        assertEquals(response1, response2);
+        assertNotEquals(response1, response3);
+        assertNotEquals(response1, response4);
+        assertNotEquals(response3, response4);
     }
 
 }

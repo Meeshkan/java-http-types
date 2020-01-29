@@ -32,6 +32,16 @@ public final class HttpRequest {
     }
 
     @Override
+    public String toString() {
+        return "HttpRequest{" +
+                "url=" + url +
+                ", method=" + method +
+                ", headers=" + headers +
+                ", body='" + body + '\'' +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

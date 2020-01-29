@@ -6,10 +6,7 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -70,6 +67,7 @@ public final class HttpExchange {
 
         HttpUrl.Builder urlBuilder = new HttpUrl.Builder();
         urlBuilder.protocol(protocolEnum);
+        urlBuilder.host(requestObject.getString("host"));
         try {
             String pathnameString = requestObject.getString("pathname");
             try {
@@ -99,16 +97,32 @@ public final class HttpExchange {
         HttpHeaders.Builder requestHeaders = new HttpHeaders.Builder();
         JSONObject requestHeadersObject = requestObject.getJSONObject("headers");
         for (String headerName : requestHeadersObject.keySet()) {
-            String headerValue = requestHeadersObject.getString(headerName);
-            requestHeaders.add(headerName, headerValue);
+            try {
+                String headerValue = requestHeadersObject.getString(headerName);
+                requestHeaders.add(headerName, headerValue);
+            } catch (JSONException e) {
+                // Might be an array.
+                JSONArray headersArray = requestHeadersObject.getJSONArray(headerName);
+                for (Object headerValue : headersArray) {
+                    requestHeaders.add(headerName, (String) headerValue);
+                }
+            }
         }
         requestBuilder.headers(requestHeaders.build());
 
         HttpHeaders.Builder responseHeaders = new HttpHeaders.Builder();
         JSONObject responseHeadersObject = responseObject.getJSONObject("headers");
         for (String headerName : responseHeadersObject.keySet()) {
-            String headerValue = responseHeadersObject.getString(headerName);
-            responseHeaders.add(headerName, headerValue);
+            try {
+                String headerValue = responseHeadersObject.getString(headerName);
+                responseHeaders.add(headerName, headerValue);
+            } catch (JSONException e) {
+                // Might be an array.
+                JSONArray headersArray = responseHeadersObject.getJSONArray(headerName);
+                for (Object headerValue : headersArray) {
+                    responseHeaders.add(headerName, (String) headerValue);
+                }
+            }
         }
 
         HttpResponse.Builder responseBuilder = new HttpResponse.Builder()
@@ -167,6 +181,28 @@ public final class HttpExchange {
 
         Spliterator<HttpExchange> spliterator = Spliterators.spliteratorUnknownSize(exchangeIterator, Spliterator.NONNULL);
         return StreamSupport.stream(spliterator, false);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HttpExchange that = (HttpExchange) o;
+        return request.equals(that.request) &&
+                response.equals(that.response);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(request, response);
+    }
+
+    @Override
+    public String toString() {
+        return "HttpExchange{" +
+                "request=" + request +
+                ", response=" + response +
+                '}';
     }
 
     public static class Builder {

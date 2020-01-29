@@ -2,9 +2,7 @@ package com.meeshkan.http.types;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
@@ -113,12 +111,29 @@ public class HttpExchangeTest {
         testJsonlStream(HttpExchange.parseJsonl(buffer.toString()));
         testJsonlStream(HttpExchange.parseJsonl(new InputStreamReader(input.get(), StandardCharsets.UTF_8)));
         testJsonlStream(HttpExchange.parseJsonl(input.get()));
+
+        // Test serialization roundtrip:
+        List<HttpExchange> initialExchanges = HttpExchange.parseJsonl(buffer.toString()).collect(Collectors.toList());
+        StringWriter stringWriter = new StringWriter();
+        try (HttpExchangeWriter exchangeWriter = new HttpExchangeWriter(stringWriter)) {
+            exchangeWriter.writeAll(initialExchanges);
+        }
+        assertEquals(2, stringWriter.toString().split("\n").length, "JSONL should have two lines");
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try (HttpExchangeWriter exchangeWriter = new HttpExchangeWriter(baos)) {
+            exchangeWriter.writeAll(initialExchanges);
+        }
+        List<HttpExchange> parsedExchanges = HttpExchange.parseJsonl(stringWriter.toString()).collect(Collectors.toList());
+        assertEquals(initialExchanges, parsedExchanges);
+        parsedExchanges = HttpExchange.parseJsonl(new String(baos.toByteArray(), StandardCharsets.UTF_8)).collect(Collectors.toList());
+        assertEquals(initialExchanges, parsedExchanges);
     }
 
     private void testJsonlStream(Stream<HttpExchange> stream) {
         List<HttpExchange> exchanges = stream.collect(Collectors.toList());
         assertEquals(2, exchanges.size());
         assertEquals("/user/repos1", exchanges.get(0).getRequest().getUrl().getPathname());
+        assertEquals("example.com", exchanges.get(0).getRequest().getUrl().getHost());
         assertEquals(HttpProtocol.HTTP, exchanges.get(0).getRequest().getUrl().getProtocol());
         assertEquals(HttpMethod.GET, exchanges.get(0).getRequest().getMethod());
         assertEquals("/user/repos2", exchanges.get(1).getRequest().getUrl().getPathname());

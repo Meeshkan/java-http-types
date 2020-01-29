@@ -1,11 +1,12 @@
 package com.meeshkan.http.types;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class HttpUrlTest {
 
@@ -18,7 +19,7 @@ public class HttpUrlTest {
                 .addQueryParameter("mykey", "myvalue")
                 .build();
 
-        Assertions.assertEquals(new URL("http://example.com/my/path?mykey=myvalue"), url.asUrl());
+        assertEquals(new URL("http://example.com/my/path?mykey=myvalue"), url.asUrl());
     }
 
     @Test
@@ -28,12 +29,12 @@ public class HttpUrlTest {
                 .url(new URL("https://example.com/my/path?mykey=myvalue&n=v1&n=v2"))
                 .build();
 
-        Assertions.assertEquals(HttpProtocol.HTTPS, url.getProtocol());
-        Assertions.assertEquals("example.com", url.getHost());
-        Assertions.assertEquals("/my/path", url.getPathname());
-        Assertions.assertEquals("myvalue", url.getFirstQueryParameter("mykey"));
-        Assertions.assertEquals("v1", url.getFirstQueryParameter("n"));
-        Assertions.assertEquals(Arrays.asList("v1", "v2"), url.getAllQueryParameters("n"));
+        assertEquals(HttpProtocol.HTTPS, url.getProtocol());
+        assertEquals("example.com", url.getHost());
+        assertEquals("/my/path", url.getPathname());
+        assertEquals("myvalue", url.getFirstQueryParameter("mykey"));
+        assertEquals("v1", url.getFirstQueryParameter("n"));
+        assertEquals(Arrays.asList("v1", "v2"), url.getAllQueryParameters("n"));
     }
 
     @Test
@@ -48,9 +49,9 @@ public class HttpUrlTest {
                 .queryParametersMultivalued(queryParameters)
                 .build();
 
-        Assertions.assertEquals("myvalue", url.getFirstQueryParameter("mykey"));
-        Assertions.assertEquals("v1", url.getFirstQueryParameter("n"));
-        Assertions.assertEquals(Arrays.asList("v1", "v2"), url.getAllQueryParameters("n"));
+        assertEquals("myvalue", url.getFirstQueryParameter("mykey"));
+        assertEquals("v1", url.getFirstQueryParameter("n"));
+        assertEquals(Arrays.asList("v1", "v2"), url.getAllQueryParameters("n"));
     }
 
 }

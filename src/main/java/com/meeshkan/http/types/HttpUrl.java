@@ -78,6 +78,32 @@ public class HttpUrl {
         }
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HttpUrl httpUrl = (HttpUrl) o;
+        return protocol == httpUrl.protocol &&
+                host.equals(httpUrl.host) &&
+                pathname.equals(httpUrl.pathname) &&
+                Objects.equals(queryParameters, httpUrl.queryParameters);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(protocol, host, pathname, queryParameters);
+    }
+
+    @Override
+    public String toString() {
+        return "HttpUrl{" +
+                "protocol=" + protocol +
+                ", host='" + host + '\'' +
+                ", pathname='" + pathname + '\'' +
+                ", queryParameters=" + queryParameters +
+                '}';
+    }
+
     public static class Builder {
         private HttpProtocol protocol;
         private String host;

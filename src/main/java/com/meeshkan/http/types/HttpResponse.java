@@ -40,6 +40,15 @@ public final class HttpResponse {
         return Objects.hash(body, statusCode, headers);
     }
 
+    @Override
+    public String toString() {
+        return "HttpResponse{" +
+                "body='" + body + '\'' +
+                ", statusCode=" + statusCode +
+                ", headers=" + headers +
+                '}';
+    }
+
     public static class Builder {
         private String body;
         private int statusCode;
