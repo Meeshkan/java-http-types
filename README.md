@@ -24,7 +24,7 @@ HttpExchangeReader.fromJsonLines(input)
 
 # Creating an HTTP exchange manually and writing it
 ```java
-try (HttpExchangeWriter writer = new HttpExchangeWriter(new FileOutputStream("output.jsonl"))) {
+try (var writer = new HttpExchangeWriter(new FileOutputStream("output.jsonl"))) {
     HttpExchange exchange =
         new HttpExchange.Builder()
             .request(new HttpRequest.Builder()
