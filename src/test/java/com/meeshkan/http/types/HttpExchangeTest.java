@@ -11,8 +11,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class HttpExchangeTest {
 
@@ -179,6 +178,16 @@ public class HttpExchangeTest {
                     .build();
 
             writer.write(exchange);
+        }
+    }
+
+    @Test
+    void requestRequired() {
+        try {
+            new HttpExchange.Builder().build();
+            fail("Exception expected");
+        } catch (NullPointerException e) {
+            assertTrue(e.getMessage().equals("'request' cannot be null"));
         }
     }
 }
