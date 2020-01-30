@@ -193,7 +193,7 @@ public class HttpUrl {
     }
 
     /**
-     * {@link HttpUrl} builder.
+     * Builder of immutable {@link HttpUrl} instances.
      */
     public static class Builder {
         private HttpProtocol protocol;

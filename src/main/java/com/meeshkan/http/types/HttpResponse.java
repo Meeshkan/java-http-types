@@ -61,6 +61,9 @@ public final class HttpResponse {
                 '}';
     }
 
+    /**
+     * Builder of immutable {@link HttpResponse} instances.
+     */
     public static class Builder {
         private String body;
         private int statusCode;

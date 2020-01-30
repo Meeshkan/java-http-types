@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Writes {@link HttpExchange HTTP exchanges} in the <a href="https://meeshkan.github.io/http-types/">HTTP Types JSON Line format</a>.
+ * Writes {@link HttpExchange HTTP exchanges} in the <a href="https://meeshkan.github.io/http-types/">HTTP Types JSON Lines format</a>.
  * <p>
  * Output written using this writer can be read back using a {@link HttpExchangeReader}.
  */

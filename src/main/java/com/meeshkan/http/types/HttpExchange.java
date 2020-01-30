@@ -5,7 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
- * A immutable HTTP request and response pair.
+ * HTTP request and response pair.
  * <p>
  * To work with serialization in the <a href="https://meeshkan.github.io/http-types/">HTTP Types</a> format, use use {@link HttpExchangeReader} and {@link HttpExchangeWriter}.
  * <p>
@@ -65,7 +65,7 @@ public final class HttpExchange {
     }
 
     /**
-     * Builder of {@link HttpExchange}.
+     * Builder of immutable {@link HttpExchange} instances.
      */
     public static class Builder {
         private HttpRequest request;

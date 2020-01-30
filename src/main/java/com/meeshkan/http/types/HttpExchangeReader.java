@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * A reader of {@link HttpExchange HTTP exchanges} in the <a href="https://meeshkan.github.io/http-types/">HTTP Types JSON Lines format</a>.
+ * Reader of {@link HttpExchange HTTP exchanges} in the <a href="https://meeshkan.github.io/http-types/">HTTP Types JSON Lines format</a>.
  *
  * @see HttpExchangeWriter
  */

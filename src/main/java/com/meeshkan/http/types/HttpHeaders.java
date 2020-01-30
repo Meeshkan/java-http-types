@@ -6,7 +6,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 /**
- * A set of HTTP request or response headers.
+ * HTTP request or response headers.
  */
 public class HttpHeaders {
     private final Map<String, List<String>> headerMap;
@@ -75,7 +75,7 @@ public class HttpHeaders {
     }
 
     /**
-     * Builder of {@link HttpHeaders}.
+     * Builder of immutable {@link HttpHeaders} instances.
      */
     public static class Builder {
         private final Map<String, List<String>> headerMap = new HashMap<>();
