@@ -9,6 +9,7 @@ Java (8 or later) library to read and write records of HTTP exchanges in the [HT
 # Reading HTTP exchanges from JSON Lines
 ```java
 InputStream input = getClass().getResourceAsStream("/sample.jsonl");
+
 HttpExchangeReader
     .fromJsonLines(input)
     .filter(exchange -> exchange.getResponse().getStatusCode() == 200)
