@@ -85,6 +85,7 @@ public class HttpHeaders {
          *
          * @param headerName  the header name
          * @param headerValue the header value
+         * @return this builder
          */
         public HttpHeaders.Builder add(@NotNull String headerName, @NotNull String headerValue) {
             headerName = headerName.toLowerCase();
@@ -98,6 +99,7 @@ public class HttpHeaders {
          *
          * @param headerName   the header name
          * @param headerValues the header values
+         * @return this builder
          */
         public HttpHeaders.Builder addAll(@NotNull String headerName, @NotNull Collection<String> headerValues) {
             headerName = headerName.toLowerCase();

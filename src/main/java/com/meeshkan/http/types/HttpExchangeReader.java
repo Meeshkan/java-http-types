@@ -46,6 +46,7 @@ public final class HttpExchangeReader {
      *
      * @param in the JSON representation of a single HTTP exchange
      * @return the parsed HTTP exchange
+     * @throws IOException if there is an I/O problem reading the input
      * @see #fromJson(String)
      * @see #fromJson(Reader)
      */
@@ -58,6 +59,7 @@ public final class HttpExchangeReader {
      *
      * @param in the JSON representation of a single HTTP exchange
      * @return the parsed HTTP exchange
+     * @throws IOException if there is an I/O problem reading the input
      * @see #fromJson(String)
      * @see #fromJson(InputStream)
      */

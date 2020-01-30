@@ -51,7 +51,9 @@ public final class HttpRequest {
     }
 
     /**
+     * Body string of this HTTP request, if any.
      *
+     * @return the body string of this request, or null if none
      */
     @Nullable
     public String getBody() {

@@ -24,6 +24,8 @@ public final class HttpExchange {
 
     /**
      * The HTTP request made in this exchange, which caused the HTTP response returned by {@link #getResponse()}.
+     *
+     * @return the request part of this exchange
      */
     @NotNull
     public HttpRequest getRequest() {
@@ -32,6 +34,8 @@ public final class HttpExchange {
 
     /**
      * The HTTP response made in this exchange, caused by the HTTP request returned by {@link #getRequest()}.
+     *
+     * @return the response part of this exchange
      */
     @NotNull
     public HttpResponse getResponse() {

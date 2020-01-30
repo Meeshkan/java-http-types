@@ -316,7 +316,7 @@ public class HttpUrl {
         /**
          * Add a single query parameter.
          * <p>
-         * If the query parameter has already been added, this will create a multi-valued parameter. So to represent the query parameters of the URL "/path?q=v1&q=v2" the following calls can be made:
+         * If the query parameter has already been added, this will create a multi-valued parameter. So to represent the query parameters of the URL "/path?q=v1&amp;q=v2" the following calls can be made:
          * <pre>
          *   builder.addQueryParameter("q", "v1");
          *   builder.addQueryParameter("q", "v2");
