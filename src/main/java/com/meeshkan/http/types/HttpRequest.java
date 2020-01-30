@@ -115,7 +115,7 @@ public final class HttpRequest {
         }
 
         /**
-         * Set the URL part of the HTTP request to builder.
+         * Set the URL part of the HTTP request to build.
          *
          * @param url the URL part of a HTTP request
          * @return this builder
@@ -126,6 +126,13 @@ public final class HttpRequest {
             return this;
         }
 
+        /**
+         * Set the headers of the HTTP request to build.
+         *
+         * @param headers the headers of a HTTP request
+         * @return this builder
+         * @see #getHeaders()
+         */
         public HttpRequest.Builder headers(HttpHeaders headers) {
             this.headers = headers;
             return this;

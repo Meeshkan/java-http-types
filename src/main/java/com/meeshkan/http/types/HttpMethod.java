@@ -1,7 +1,7 @@
 package com.meeshkan.http.types;
 
 /**
- * HTTP request methods to indicate the desired action to be performed for a given resource.
+ * HTTP request method to indicate the desired action to be performed for a given resource.
  *
  * @see HttpRequest#getMethod()
  */
