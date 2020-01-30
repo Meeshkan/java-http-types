@@ -6,24 +6,8 @@
 
 Java (8 or later) library to read and write records of HTTP exchanges in the [HTTP types](https://meeshkan.github.io/http-types/) format.
 
-# Reading HTTP exchanges
-```java
-InputStream input = getClass().getResourceAsStream("/sample.jsonl");
-
-HttpExchangeReader
-    .fromJsonLines(input)
-    .filter(exchange -> exchange.getResponse().getStatusCode() == 200)
-    .forEach(exchange -> {
-        HttpRequest request = exchange.getRequest();
-        HttpUrl url = request.getUrl();
-        HttpRequest response = exchange.getRequest();
-
-        System.out.println("A " + request.getMethod() + " request to " +
-            url.getHost() + " with response body " + response.getBody());
-});
-```
-
 # Building and writing a HTTP exchange
+This library can be used to serialise a recording of HTTP traffic, for use with any tool or program that can handle the HTTP Types format.
 ```java
 try (var writer = new HttpExchangeWriter(new FileOutputStream("output.jsonl"))) {
     HttpRequest request = new HttpRequest.Builder()
@@ -55,5 +39,25 @@ try (var writer = new HttpExchangeWriter(new FileOutputStream("output.jsonl"))) 
             .build();
 
     writer.write(exchange);
+    
+    // Normally you would write multiple exchanges in the same recording.
 }
+```
+
+# Reading HTTP exchanges
+This library can also be used to read HTTP Types recordings from an input (an InputStream, Reader or String):
+```java
+InputStream input = getClass().getResourceAsStream("/sample.jsonl");
+
+HttpExchangeReader
+    .fromJsonLines(input)
+    .filter(exchange -> exchange.getResponse().getStatusCode() == 200)
+    .forEach(exchange -> {
+        HttpRequest request = exchange.getRequest();
+        HttpUrl url = request.getUrl();
+        HttpRequest response = exchange.getRequest();
+
+        System.out.println("A " + request.getMethod() + " request to " +
+            url.getHost() + " with response body " + response.getBody());
+});
 ```
