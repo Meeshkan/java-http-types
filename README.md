@@ -6,7 +6,7 @@
 
 Java (8 or later) library to read and write records of HTTP exchanges in the [HTTP types](https://meeshkan.github.io/http-types/) format.
 
-# Reading HTTP exchanges from JSON Lines
+# Reading HTTP exchanges
 ```java
 InputStream input = getClass().getResourceAsStream("/sample.jsonl");
 
