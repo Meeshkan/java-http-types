@@ -140,4 +140,45 @@ public class HttpExchangeTest {
         assertEquals(HttpProtocol.HTTPS, exchanges.get(1).getRequest().getUrl().getProtocol());
         assertEquals(HttpMethod.POST, exchanges.get(1).getRequest().getMethod());
     }
+
+    @Test
+    void readmeExamples() throws IOException {
+        InputStream input = getClass().getResourceAsStream("/sample.jsonl");
+        HttpExchangeReader.fromJsonLines(input)
+                .filter(exchange -> exchange.getResponse().getStatusCode() == 200)
+                .forEach(exchange -> {
+                    HttpRequest request = exchange.getRequest();
+                    HttpUrl url = request.getUrl();
+                    HttpRequest response = exchange.getRequest();
+                    System.out.println("A " + request.getMethod() + " request to " +
+                            url.getHost() + " with response body " + response.getBody());
+                });
+
+        try (HttpExchangeWriter writer = new HttpExchangeWriter(new FileOutputStream("output.jsonl"))) {
+            HttpExchange exchange = new HttpExchange.Builder()
+                    .request(new HttpRequest.Builder()
+                            .headers(new HttpHeaders.Builder()
+                                    .add("RequestHeader", "value")
+                                    .build())
+                            .method(HttpMethod.GET)
+                            .url(new HttpUrl.Builder()
+                                    .protocol(HttpProtocol.HTTP)
+                                    .host("example.com")
+                                    .pathname("/path")
+                                    .queryParameters(Collections.singletonMap("param", "value"))
+                                    .build())
+                            .body("requestBody")
+                            .build())
+                    .response(new HttpResponse.Builder()
+                            .headers(new HttpHeaders.Builder()
+                                    .add("ResponseHeader", "value")
+                                    .build())
+                            .statusCode(200)
+                            .body("responseBody")
+                            .build())
+                    .build();
+
+            writer.write(exchange);
+        }
+    }
 }
