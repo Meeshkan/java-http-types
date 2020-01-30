@@ -6,7 +6,7 @@
 
 Java (8 or later) library to read and write records of HTTP exchanges in the [HTTP types](https://meeshkan.github.io/http-types/) format.
 
-# Building and writing a HTTP exchange
+# Writing HTTP exchanges
 This library can be used to serialise a recording of HTTP traffic, for use with any tool or program that can handle the HTTP Types format.
 ```java
 try (var writer = new HttpExchangeWriter(new FileOutputStream("output.jsonl"))) {
