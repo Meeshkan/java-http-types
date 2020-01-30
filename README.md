@@ -4,9 +4,7 @@
 [![Package on Maven Central](https://img.shields.io/maven-central/v/com.meeshkan/http-types)](https://search.maven.org/artifact/com.meeshkan/http-types/)
 [![javadoc](https://www.javadoc.io/badge/com.meeshkan/http-types.svg)](https://www.javadoc.io/doc/com.meeshkan/http-types)
 
-Java library to read and write records of HTTP exchanges in the [HTTP types](https://meeshkan.github.io/http-types/) format.
-
-Requires Java 8 or later.
+Java (8 or later) library to read and write records of HTTP exchanges in the [HTTP types](https://meeshkan.github.io/http-types/) format.
 
 # Reading HTTP exchanges from JSON Lines
 ```java
