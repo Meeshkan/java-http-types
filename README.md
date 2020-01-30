@@ -27,25 +27,25 @@ HttpExchangeReader
 ```java
 try (var writer = new HttpExchangeWriter(new FileOutputStream("output.jsonl"))) {
     HttpRequest request = new HttpRequest.Builder()
-        .headers(new HttpHeaders.Builder()
-            .add("header1", "value1")
-            .add("header2", "value2")
-            .build())
         .method(HttpMethod.GET)
         .url(new HttpUrl.Builder()
             .protocol(HttpProtocol.HTTP)
             .host("example.com")
             .pathname("/path")
             .queryParameters(Collections.singletonMap("param", "value"))
+            .build())    
+        .headers(new HttpHeaders.Builder()
+            .add("header1", "value1")
+            .add("header2", "value2")
             .build())
         .body("requestBody")
         .build();
 
     HttpResponse = new HttpResponse.Builder()
+        .statusCode(200)
         .headers(new HttpHeaders.Builder()
             .add("header", "value")
             .build())
-        .statusCode(200)
         .body("responseBody")
         .build());
 
