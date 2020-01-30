@@ -12,7 +12,7 @@ public class HttpHeaders {
     private final Map<String, List<String>> headerMap;
 
     private HttpHeaders(Map<String, List<String>> headerMap) {
-        this.headerMap = headerMap;
+        this.headerMap = Collections.unmodifiableMap(headerMap);
     }
 
     /**
@@ -32,21 +32,26 @@ public class HttpHeaders {
     }
 
     /**
-     * Return all header values for the given header name, if any.
+     * All header values for the given header name.
      *
      * @param headerName the header name
-     * @return an immutable list of header values, or null if none
+     * @return an immutable list of header values, or an empty list if none
      */
-    @Nullable
+    @NotNull
     public List<String> getAll(@NotNull String headerName) {
         headerName = headerName.toLowerCase();
         List<String> list = headerMap.get(headerName);
         if (list == null) {
-            return null;
+            return Collections.emptyList();
         }
         return Collections.unmodifiableList(list);
     }
 
+    /**
+     * Header values as a map from header names to a list of header values.
+     *
+     * @return the HTTP headers as a map
+     */
     public Map<String, List<String>> asMap() {
         return headerMap;
     }
@@ -64,6 +69,14 @@ public class HttpHeaders {
         return Objects.hash(headerMap);
     }
 
+    @Override
+    public String toString() {
+        return "HttpHeaders{" + headerMap + '}';
+    }
+
+    /**
+     * Builder of {@link HttpHeaders}.
+     */
     public static class Builder {
         private final Map<String, List<String>> headerMap = new HashMap<>();
 
@@ -93,9 +106,15 @@ public class HttpHeaders {
             return this;
         }
 
+        /**
+         * Create a HTTP headers instance using the headers set on this builder.
+         *
+         * @return the built instance
+         */
         public HttpHeaders build() {
             return new HttpHeaders(this.headerMap);
         }
+
     }
 
 }

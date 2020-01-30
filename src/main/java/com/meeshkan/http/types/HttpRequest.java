@@ -1,30 +1,64 @@
 package com.meeshkan.http.types;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Objects;
 
+/**
+ * HTTP request.
+ *
+ * @see HttpExchange#getRequest()
+ */
 public final class HttpRequest {
+    @NotNull
     private final HttpUrl url;
+    @NotNull
     private final HttpMethod method;
+    @NotNull
     private final HttpHeaders headers;
+    @Nullable
     private final String body;
 
+    /**
+     * URL describing the request target of this HTTP request.
+     *
+     * @return the URL of this request
+     */
+    @NotNull
     public HttpUrl getUrl() {
         return url;
     }
 
+    /**
+     * HTTP method indicating the desired action of this request.
+     *
+     * @return the HTTP method used in this request
+     */
+    @NotNull
     public HttpMethod getMethod() {
         return method;
     }
 
+    /**
+     * HTTP headers used in this request.
+     *
+     * @return the HTTP headers used in this request
+     */
+    @NotNull
     public HttpHeaders getHeaders() {
         return headers;
     }
 
+    /**
+     *
+     */
+    @Nullable
     public String getBody() {
         return body;
     }
 
-    public HttpRequest(HttpUrl url, HttpMethod method, HttpHeaders headers, String body) {
+    public HttpRequest(@NotNull HttpUrl url, @NotNull HttpMethod method, @NotNull HttpHeaders headers, @Nullable String body) {
         this.url = url;
         this.method = method;
         this.headers = headers;
@@ -57,17 +91,34 @@ public final class HttpRequest {
         return Objects.hash(url, method, headers, body);
     }
 
+    /**
+     * Builder of {@link HttpResponse}.
+     */
     public static class Builder {
         private HttpUrl url;
         private HttpMethod method;
         private HttpHeaders headers;
         private String body;
 
+        /**
+         * Set the body string part of the HTTP request to build.
+         *
+         * @param body the body string part of a HTTP request
+         * @return this builder
+         * @see #getBody()
+         */
         public HttpRequest.Builder body(String body) {
             this.body = body;
             return this;
         }
 
+        /**
+         * Set the URL part of the HTTP request to builder.
+         *
+         * @param url the URL part of a HTTP request
+         * @return this builder
+         * @see #getUrl()
+         */
         public HttpRequest.Builder url(HttpUrl url) {
             this.url = url;
             return this;
@@ -78,14 +129,29 @@ public final class HttpRequest {
             return this;
         }
 
+        /**
+         * Set the HTTP method on the HTTP request.
+         *
+         * @param method the HTTP method to set
+         * @return this builder
+         * @see #getMethod()
+         */
         public HttpRequest.Builder method(HttpMethod method) {
             this.method = method;
             return this;
         }
 
+        /**
+         * Create a HTTP request using the properties set on this builder
+         *
+         * @return the built instance
+         */
         public HttpRequest build() {
-            return new HttpRequest(url, method, headers, body);
+            Assert.assertNotNull("url", url);
+            Assert.assertNotNull("method", method);
+            return new HttpRequest(url, method, headers == null ? new HttpHeaders.Builder().build() : headers, body);
         }
+
     }
 
 }

@@ -1,5 +1,6 @@
 package com.meeshkan.http.types;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONWriter;
 
 import java.io.*;
@@ -8,15 +9,31 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-public class HttpExchangeWriter implements Closeable {
+/**
+ * Writes {@link HttpExchange HTTP exchanges} in the <a href="https://meeshkan.github.io/http-types/">HTTP Types JSON Line format</a>.
+ * <p>
+ * Output written using this writer can be read back using a {@link HttpExchangeReader}.
+ */
+public final class HttpExchangeWriter implements Closeable {
+    @NotNull
     private final BufferedWriter bufferedWriter;
     boolean first = true;
 
-    public HttpExchangeWriter(OutputStream out) {
+    /**
+     * Creates a HTTP exchange writer that uses the specified output stream.
+     *
+     * @param out Output where to write the serialized HTTP exchanges
+     */
+    public HttpExchangeWriter(@NotNull OutputStream out) {
         this(new OutputStreamWriter(out, StandardCharsets.UTF_8));
     }
 
-    public HttpExchangeWriter(Writer out) {
+    /**
+     * Creates a HTTP exchange writer that uses the specified output writer.
+     *
+     * @param out Output where to write the serialized HTTP exchanges
+     */
+    public HttpExchangeWriter(@NotNull Writer out) {
         if (out instanceof BufferedWriter) {
             this.bufferedWriter = (BufferedWriter) out;
         } else {
@@ -24,7 +41,13 @@ public class HttpExchangeWriter implements Closeable {
         }
     }
 
-    public void write(HttpExchange exchange) {
+    /**
+     * Writes a HTTP exchange as a single JSON formatted line.
+     *
+     * @param exchange The HTTP exchange to write
+     * @see #writeAll(Collection)
+     */
+    public void write(@NotNull HttpExchange exchange) {
         if (first) {
             first = false;
         } else {
@@ -82,14 +105,24 @@ public class HttpExchangeWriter implements Closeable {
         writer.endObject(); // End main object.
     }
 
-    public void writeAll(Collection<HttpExchange> exchanges) {
+    /**
+     * Writes multiple HTTP Exchanges, each formatted in JSON format on a single line.
+     *
+     * @param exchanges The HTTP exchanges to write
+     * @see #write(HttpExchange)
+     */
+    public void writeAll(@NotNull Collection<HttpExchange> exchanges) {
         for (HttpExchange exchange : exchanges) {
             write(exchange);
         }
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void close() throws IOException {
         bufferedWriter.close();
     }
+
 }

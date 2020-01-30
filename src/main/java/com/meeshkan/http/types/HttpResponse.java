@@ -1,12 +1,23 @@
 package com.meeshkan.http.types;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.Objects;
 
+/**
+ * HTTP response.
+ *
+ * @see HttpExchange#getResponse()
+ */
 public final class HttpResponse {
+    @Nullable
     private final String body;
     private final int statusCode;
+    @NotNull
     private final HttpHeaders headers;
 
+    @Nullable
     public String getBody() {
         return body;
     }
@@ -15,11 +26,12 @@ public final class HttpResponse {
         return statusCode;
     }
 
+    @NotNull
     public HttpHeaders getHeaders() {
         return headers;
     }
 
-    HttpResponse(String body, int statusCode, HttpHeaders headers) {
+    private HttpResponse(@Nullable String body, int statusCode, @NotNull HttpHeaders headers) {
         this.body = body;
         this.statusCode = statusCode;
         this.headers = headers;
@@ -69,8 +81,15 @@ public final class HttpResponse {
             return this;
         }
 
+        /**
+         * Create a HTTP response using the properties set on this builder
+         *
+         * @return the built instance
+         */
         public HttpResponse build() {
-            return new HttpResponse(body, statusCode, headers);
+            return new HttpResponse(body, statusCode, headers == null ? new HttpHeaders.Builder().build() : headers);
         }
+
     }
+
 }

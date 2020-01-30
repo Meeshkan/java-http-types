@@ -48,7 +48,7 @@ public class HttpExchangeTest {
 
     @Test
     void loadFromJson() throws Exception {
-        HttpExchange exchange = HttpExchange.fromJson(getClass().getResourceAsStream("/sample-with-pathname-and-query.json"));
+        HttpExchange exchange = HttpExchangeReader.fromJson(getClass().getResourceAsStream("/sample-with-pathname-and-query.json"));
 
         assertEquals(HttpMethod.GET, exchange.getRequest().getMethod());
 
@@ -72,7 +72,7 @@ public class HttpExchangeTest {
 
     @Test
     void loadFromJsonWithQueryParametersInsidePath() throws Exception {
-        HttpExchange exchange = HttpExchange.fromJson(getClass().getResourceAsStream("/sample-with-path.json"));
+        HttpExchange exchange = HttpExchangeReader.fromJson(getClass().getResourceAsStream("/sample-with-path.json"));
 
         assertEquals(HttpMethod.GET, exchange.getRequest().getMethod());
 
@@ -108,12 +108,12 @@ public class HttpExchangeTest {
             buffer.append(line);
         }
 
-        testJsonlStream(HttpExchange.parseJsonl(buffer.toString()));
-        testJsonlStream(HttpExchange.parseJsonl(new InputStreamReader(input.get(), StandardCharsets.UTF_8)));
-        testJsonlStream(HttpExchange.parseJsonl(input.get()));
+        testJsonlStream(HttpExchangeReader.fromJsonLines(buffer.toString()));
+        testJsonlStream(HttpExchangeReader.fromJsonLines(new InputStreamReader(input.get(), StandardCharsets.UTF_8)));
+        testJsonlStream(HttpExchangeReader.fromJsonLines(input.get()));
 
         // Test serialization roundtrip:
-        List<HttpExchange> initialExchanges = HttpExchange.parseJsonl(buffer.toString()).collect(Collectors.toList());
+        List<HttpExchange> initialExchanges = HttpExchangeReader.fromJsonLines(buffer.toString()).collect(Collectors.toList());
         StringWriter stringWriter = new StringWriter();
         try (HttpExchangeWriter exchangeWriter = new HttpExchangeWriter(stringWriter)) {
             exchangeWriter.writeAll(initialExchanges);
@@ -123,9 +123,9 @@ public class HttpExchangeTest {
         try (HttpExchangeWriter exchangeWriter = new HttpExchangeWriter(baos)) {
             exchangeWriter.writeAll(initialExchanges);
         }
-        List<HttpExchange> parsedExchanges = HttpExchange.parseJsonl(stringWriter.toString()).collect(Collectors.toList());
+        List<HttpExchange> parsedExchanges = HttpExchangeReader.fromJsonLines(stringWriter.toString()).collect(Collectors.toList());
         assertEquals(initialExchanges, parsedExchanges);
-        parsedExchanges = HttpExchange.parseJsonl(new String(baos.toByteArray(), StandardCharsets.UTF_8)).collect(Collectors.toList());
+        parsedExchanges = HttpExchangeReader.fromJsonLines(new String(baos.toByteArray(), StandardCharsets.UTF_8)).collect(Collectors.toList());
         assertEquals(initialExchanges, parsedExchanges);
     }
 
