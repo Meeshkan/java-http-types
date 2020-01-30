@@ -6,6 +6,15 @@
 
 Java (8 or later) library to read and write records of HTTP exchanges in the [HTTP types](https://meeshkan.github.io/http-types/) format.
 
+# Using this library
+Releases are available on [Maven Central](https://search.maven.org/artifact/com.meeshkan/http-types/0.4.0/jar).
+
+```gradle
+dependencies {
+    implementation 'com.meeshkan:http-types:0.4.0'
+}
+```
+
 # Writing HTTP exchanges
 This library can be used to serialise a recording of HTTP traffic for use with any program that can handle the HTTP Types format.
 ```java
