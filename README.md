@@ -21,7 +21,7 @@ HttpExchangeReader.fromJsonLines(input)
 });
 ```
 
-# Creating an HTTP exchange manually and writing it
+# Building and writing a HTTP exchange
 ```java
 try (var writer = new HttpExchangeWriter(new FileOutputStream("output.jsonl"))) {
     HttpExchange exchange =
