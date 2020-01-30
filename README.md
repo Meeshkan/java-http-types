@@ -17,6 +17,7 @@ HttpExchangeReader.fromJsonLines(input)
         HttpRequest request = exchange.getRequest();
         HttpUrl url = request.getUrl();
         HttpRequest response = exchange.getRequest();
+
         System.out.println("A " + request.getMethod() + " request to " +
             url.getHost() + " with response body " + response.getBody());
 });
