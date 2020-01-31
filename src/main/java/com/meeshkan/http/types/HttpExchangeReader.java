@@ -6,6 +6,12 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.TemporalAccessor;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Spliterator;
@@ -20,8 +26,30 @@ import java.util.stream.StreamSupport;
  */
 public final class HttpExchangeReader {
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+            .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            .optionalStart().appendOffsetId()
+            .toFormatter();
+
     private HttpExchangeReader() {
         // Not for instantiation, only a container of static methods.
+    }
+
+    // See https://stackoverflow.com/a/46410889/300710
+    private static Instant parseIso8601(String input) {
+        if (input == null) {
+            return null;
+        }
+        Instant instant;
+        TemporalAccessor parsed = DATE_TIME_FORMATTER.parseBest(input, Instant::from, LocalDateTime::from);
+        if (parsed instanceof Instant) {
+            instant = (Instant) parsed;
+        } else if (parsed instanceof LocalDateTime) {
+            instant = ((LocalDateTime) parsed).atOffset(ZoneOffset.UTC).toInstant();
+        } else {
+            throw new RuntimeException("Invalid timestamp: '" + input + "'");
+        }
+        return instant;
     }
 
     /**
@@ -135,6 +163,13 @@ public final class HttpExchangeReader {
         }
         requestBuilder.headers(requestHeaders.build());
 
+        try {
+            String requestTimestamp = requestObject.getString("timestamp");
+            requestBuilder.timestamp(parseIso8601(requestTimestamp));
+        } catch (JSONException e) {
+            // Ignore non-existing optional timestamp.
+        }
+
         HttpHeaders.Builder responseHeaders = new HttpHeaders.Builder();
         JSONObject responseHeadersObject = responseObject.getJSONObject("headers");
         for (String headerName : responseHeadersObject.keySet()) {
@@ -150,10 +185,18 @@ public final class HttpExchangeReader {
             }
         }
 
+
         HttpResponse.Builder responseBuilder = new HttpResponse.Builder()
                 .statusCode(responseObject.getInt("statusCode"))
                 .headers(responseHeaders.build())
                 .body(responseObject.getString("body"));
+
+        try {
+            String responseTimestamp = responseObject.getString("timestamp");
+            responseBuilder.timestamp(parseIso8601(responseTimestamp));
+        } catch (JSONException e) {
+            // Ignore non-existing optional timestamp.
+        }
 
         return new HttpExchange.Builder()
                 .request(requestBuilder.build())

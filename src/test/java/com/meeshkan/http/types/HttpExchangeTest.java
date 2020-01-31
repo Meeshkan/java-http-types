@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -57,6 +58,7 @@ public class HttpExchangeTest {
         assertTrue(path.contains("mykey=myvalue"));
         assertTrue(path.contains("anotherkey=value1"));
         assertTrue(path.contains("anotherkey=value2"));
+        assertNull(exchange.getRequest().getTimestamp());
         assertEquals("myvalue", exchange.getRequest().getUrl().getFirstQueryParameter("mykey"));
         assertEquals(Collections.singletonList("myvalue"), exchange.getRequest().getUrl().getAllQueryParameters("mykey"));
         assertEquals("value1", exchange.getRequest().getUrl().getFirstQueryParameter("anotherkey"));
@@ -81,6 +83,8 @@ public class HttpExchangeTest {
         assertTrue(path.contains("mykey=myvalue"));
         assertTrue(path.contains("anotherkey=value1"));
         assertTrue(path.contains("anotherkey=value2"));
+        assertEquals(exchange.getRequest().getTimestamp(), OffsetDateTime.parse("2018-11-13T20:20:39+02:00").toInstant());
+        assertEquals(exchange.getResponse().getTimestamp(), OffsetDateTime.parse("2019-11-13T20:20:39+02:00").toInstant());
         assertEquals("myvalue", exchange.getRequest().getUrl().getFirstQueryParameter("mykey"));
         assertEquals(Collections.singletonList("myvalue"), exchange.getRequest().getUrl().getAllQueryParameters("mykey"));
         assertEquals("value1", exchange.getRequest().getUrl().getFirstQueryParameter("anotherkey"));
@@ -140,54 +144,4 @@ public class HttpExchangeTest {
         assertEquals(HttpMethod.POST, exchanges.get(1).getRequest().getMethod());
     }
 
-    @Test
-    void readmeExamples() throws IOException {
-        InputStream input = getClass().getResourceAsStream("/sample.jsonl");
-        HttpExchangeReader.fromJsonLines(input)
-                .filter(exchange -> exchange.getResponse().getStatusCode() == 200)
-                .forEach(exchange -> {
-                    HttpRequest request = exchange.getRequest();
-                    HttpUrl url = request.getUrl();
-                    HttpRequest response = exchange.getRequest();
-                    System.out.println("A " + request.getMethod() + " request to " +
-                            url.getHost() + " with response body " + response.getBody());
-                });
-
-        try (HttpExchangeWriter writer = new HttpExchangeWriter(new FileOutputStream("output.jsonl"))) {
-            HttpExchange exchange = new HttpExchange.Builder()
-                    .request(new HttpRequest.Builder()
-                            .headers(new HttpHeaders.Builder()
-                                    .add("RequestHeader", "value")
-                                    .build())
-                            .method(HttpMethod.GET)
-                            .url(new HttpUrl.Builder()
-                                    .protocol(HttpProtocol.HTTP)
-                                    .host("example.com")
-                                    .pathname("/path")
-                                    .queryParameters(Collections.singletonMap("param", "value"))
-                                    .build())
-                            .body("requestBody")
-                            .build())
-                    .response(new HttpResponse.Builder()
-                            .headers(new HttpHeaders.Builder()
-                                    .add("ResponseHeader", "value")
-                                    .build())
-                            .statusCode(200)
-                            .body("responseBody")
-                            .build())
-                    .build();
-
-            writer.write(exchange);
-        }
-    }
-
-    @Test
-    void requestRequired() {
-        try {
-            new HttpExchange.Builder().build();
-            fail("Exception expected");
-        } catch (NullPointerException e) {
-            assertTrue(e.getMessage().equals("'request' cannot be null"));
-        }
-    }
 }

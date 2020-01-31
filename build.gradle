@@ -9,7 +9,7 @@ repositories {
 }
 
 sourceCompatibility = 1.8
-version = "0.4.0"
+version = "0.5.0"
 
 dependencies {
     compile group: 'org.jetbrains', name: 'annotations', version: '16.0.2'
