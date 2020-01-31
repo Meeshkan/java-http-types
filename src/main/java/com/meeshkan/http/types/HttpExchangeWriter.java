@@ -5,6 +5,8 @@ import org.json.JSONWriter;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -63,6 +65,10 @@ public final class HttpExchangeWriter implements Closeable {
         HttpRequest request = exchange.getRequest();
         writer.key("request");
         writer.object();
+        Instant requestTimestamp = request.getTimestamp();
+        if (requestTimestamp != null) {
+            writer.key("timestamp").value(DateTimeFormatter.ISO_INSTANT.format(requestTimestamp));
+        }
         writer.key("protocol").value(request.getUrl().getProtocol().name().toLowerCase());
         writer.key("method").value(request.getMethod().name().toLowerCase());
         writer.key("headers");
@@ -90,6 +96,10 @@ public final class HttpExchangeWriter implements Closeable {
         HttpResponse response = exchange.getResponse();
         writer.key("response");
         writer.object(); // Start response.
+        Instant responseTimestamp = response.getTimestamp();
+        if (responseTimestamp != null) {
+            writer.key("timestamp").value(DateTimeFormatter.ISO_INSTANT.format(responseTimestamp));
+        }
         writer.key("statusCode").value(response.getStatusCode());
         writer.key("headers");
         writer.object(); // Start headers.

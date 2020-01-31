@@ -3,6 +3,7 @@ package com.meeshkan.http.types;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -18,7 +19,19 @@ public final class HttpRequest {
     @NotNull
     private final HttpHeaders headers;
     @Nullable
+    private final Instant timestamp;
+    @Nullable
     private final String body;
+
+    /**
+     * Time at which the HTTP request was initiated.
+     *
+     * @return the HTTP request initiation time, or null if none
+     */
+    @Nullable
+    public Instant getTimestamp() {
+        return timestamp;
+    }
 
     /**
      * URL describing the request target of this HTTP request.
@@ -51,7 +64,7 @@ public final class HttpRequest {
     }
 
     /**
-     * Body string of this HTTP request, if any.
+     * Body string of this HTTP request.
      *
      * @return the body string of this request, or null if none
      */
@@ -60,11 +73,12 @@ public final class HttpRequest {
         return body;
     }
 
-    public HttpRequest(@NotNull HttpUrl url, @NotNull HttpMethod method, @NotNull HttpHeaders headers, @Nullable String body) {
+    HttpRequest(@NotNull HttpUrl url, @NotNull HttpMethod method, @NotNull HttpHeaders headers, @Nullable String body, @Nullable Instant timestamp) {
         this.url = url;
         this.method = method;
         this.headers = headers;
         this.body = body;
+        this.timestamp = timestamp;
     }
 
     @Override
@@ -73,6 +87,7 @@ public final class HttpRequest {
                 "url=" + url +
                 ", method=" + method +
                 ", headers=" + headers +
+                ", timestamp=" + timestamp +
                 ", body='" + body + '\'' +
                 '}';
     }
@@ -85,12 +100,13 @@ public final class HttpRequest {
         return url.equals(that.url) &&
                 method == that.method &&
                 headers.equals(that.headers) &&
+                Objects.equals(timestamp, that.timestamp) &&
                 Objects.equals(body, that.body);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(url, method, headers, body);
+        return Objects.hash(url, method, headers, timestamp, body);
     }
 
     /**
@@ -101,6 +117,7 @@ public final class HttpRequest {
         private HttpMethod method;
         private HttpHeaders headers;
         private String body;
+        private Instant timestamp;
 
         /**
          * Set the body string part of the HTTP request to build.
@@ -139,7 +156,7 @@ public final class HttpRequest {
         }
 
         /**
-         * Set the HTTP method on the HTTP request.
+         * Set the HTTP method on the HTTP request to build.
          *
          * @param method the HTTP method to set
          * @return this builder
@@ -151,6 +168,18 @@ public final class HttpRequest {
         }
 
         /**
+         * Set the optional HTTP request initiation time on the HTTP request to build.
+         *
+         * @param timestamp the request initiation time to set
+         * @return this builder
+         * @see #getTimestamp()
+         */
+        public HttpRequest.Builder timestamp(@Nullable Instant timestamp) {
+            this.timestamp = timestamp;
+            return this;
+        }
+
+        /**
          * Create a HTTP request using the properties set on this builder
          *
          * @return the built instance
@@ -158,7 +187,7 @@ public final class HttpRequest {
         public HttpRequest build() {
             Assert.assertNotNull("url", url);
             Assert.assertNotNull("method", method);
-            return new HttpRequest(url, method, headers == null ? new HttpHeaders.Builder().build() : headers, body);
+            return new HttpRequest(url, method, headers == null ? new HttpHeaders.Builder().build() : headers, body, timestamp);
         }
 
     }
