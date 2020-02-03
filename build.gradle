@@ -4,12 +4,15 @@ plugins {
     id 'maven-publish'
 }
 
+version = "0.5.0"
+
 repositories {
     jcenter()
 }
 
-sourceCompatibility = 1.8
-version = "0.5.0"
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+}
 
 dependencies {
     compile group: 'org.jetbrains', name: 'annotations', version: '16.0.2'
