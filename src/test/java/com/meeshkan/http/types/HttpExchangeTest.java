@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -54,10 +55,10 @@ public class HttpExchangeTest {
 
         assertEquals("/user/repos", exchange.getRequest().getUrl().getPathname());
         String path = exchange.getRequest().getUrl().getPath();
-        assertTrue(path.startsWith("/user/repos?"));
-        assertTrue(path.contains("mykey=myvalue"));
-        assertTrue(path.contains("anotherkey=value1"));
-        assertTrue(path.contains("anotherkey=value2"));
+        String queryString = path.substring(path.indexOf('?') + 1);
+        String[] queryParts = queryString.split("&");
+        assertEquals(3, queryParts.length);
+        assertEquals(new HashSet<>(Arrays.asList("mykey=myvalue", "anotherkey=value1", "anotherkey=value2")), new HashSet<>(Arrays.asList(queryParts)));
         assertNull(exchange.getRequest().getTimestamp());
         assertEquals("myvalue", exchange.getRequest().getUrl().getFirstQueryParameter("mykey"));
         assertEquals(Collections.singletonList("myvalue"), exchange.getRequest().getUrl().getAllQueryParameters("mykey"));
