@@ -90,11 +90,17 @@ public class HttpUrl {
         StringBuilder result = new StringBuilder();
         result.append(pathname);
         if (!queryParameters.isEmpty()) {
-            result.append('?');
+            boolean first = true;
             try {
                 for (Map.Entry<String, List<String>> entry : queryParameters.entrySet()) {
                     String encodedName = URLEncoder.encode(entry.getKey(), "utf-8");
                     for (String value : entry.getValue()) {
+                        if (first) {
+                            first = false;
+                            result.append('?');
+                        } else {
+                            result.append('&');
+                        }
                         String encodedValue = URLEncoder.encode(value, "utf-8");
                         result.append(encodedName).append('=').append(encodedValue);
                     }
