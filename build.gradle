@@ -15,7 +15,7 @@ java {
 }
 
 dependencies {
-    compile group: 'org.jetbrains', name: 'annotations', version: '16.0.2'
+    implementation group: 'org.jetbrains', name: 'annotations', version: '16.0.2'
     implementation group: 'org.json', name: 'json', version: '20190722'
     testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter', version: '5.5.2'
 }
