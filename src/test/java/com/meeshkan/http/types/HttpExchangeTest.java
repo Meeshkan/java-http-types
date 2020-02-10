@@ -1,14 +1,16 @@
 package com.meeshkan.http.types;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.leadpony.justify.api.JsonSchema;
+import org.leadpony.justify.api.JsonValidationService;
+import org.leadpony.justify.api.ProblemHandler;
 
+import javax.json.stream.JsonParser;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -131,6 +133,23 @@ public class HttpExchangeTest {
         assertEquals(initialExchanges, parsedExchanges);
         parsedExchanges = HttpExchangeReader.fromJsonLines(new String(baos.toByteArray(), StandardCharsets.UTF_8)).collect(Collectors.toList());
         assertEquals(initialExchanges, parsedExchanges);
+
+        // Validate against JSON schema.
+        String[] parts = stringWriter.toString().split(("\n"));
+        JsonValidationService service = JsonValidationService.newInstance();
+        JsonSchema schema = service.readSchema(getClass().getResourceAsStream("/http-types-schema.json"));
+        List<String> problems = new ArrayList<>();
+        ProblemHandler handler = service.createProblemPrinter(problems::add);
+        for (int i = 0; i < 2; i++) {
+            try (JsonParser parser = service.createParser(new StringReader(parts[i]), schema, handler)) {
+                while (parser.hasNext()) {
+                    JsonParser.Event event = parser.next();
+                }
+            }
+            if (!problems.isEmpty()) {
+                Assertions.fail("Error validating against schema: " + problems);
+            }
+        }
     }
 
     private void testJsonlStream(Stream<HttpExchange> stream) {
