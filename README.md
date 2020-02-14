@@ -1,4 +1,4 @@
-# java-http-types
+# HTTP Types in Java
 [![Build Status](https://github.com/Meeshkan/java-http-types/workflows/Java%20CI/badge.svg)](https://github.com/Meeshkan/java-http-types/actions?query=workflow%3A%22Java+CI%22)
 [![MIT licensed](http://img.shields.io/:license-MIT-blue.svg)](LICENSE)
 [![Package on Maven Central](https://img.shields.io/maven-central/v/com.meeshkan/http-types)](https://search.maven.org/artifact/com.meeshkan/http-types/)
