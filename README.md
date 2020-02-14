@@ -11,7 +11,7 @@ Releases are available on [Maven Central](https://search.maven.org/artifact/com.
 
 ```gradle
 dependencies {
-    implementation 'com.meeshkan:http-types:0.4.0'
+    implementation 'com.meeshkan:http-types:0.5.0'
 }
 ```
 
