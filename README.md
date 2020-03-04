@@ -1,10 +1,10 @@
-# HTTP Types in Java
+# http-types in Java
 [![Build Status](https://github.com/Meeshkan/java-http-types/workflows/Java%20CI/badge.svg)](https://github.com/Meeshkan/java-http-types/actions?query=workflow%3A%22Java+CI%22)
 [![MIT licensed](http://img.shields.io/:license-MIT-blue.svg)](LICENSE)
 [![Package on Maven Central](https://img.shields.io/maven-central/v/com.meeshkan/http-types)](https://search.maven.org/artifact/com.meeshkan/http-types/)
 [![javadoc](https://www.javadoc.io/badge/com.meeshkan/http-types.svg)](https://www.javadoc.io/doc/com.meeshkan/http-types)
 
-Java (8 or later) library to read and write records of HTTP exchanges in the [HTTP types](https://meeshkan.github.io/http-types/) format.
+Java (8 or later) library to read and write records of HTTP exchanges in the [http-types](https://meeshkan.github.io/http-types/) format.
 
 # Using this library
 Releases are available on [Maven Central](https://search.maven.org/artifact/com.meeshkan/http-types/0.4.0/jar).

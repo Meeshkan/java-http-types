@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
- * Reader of {@link HttpExchange HTTP exchanges} in the <a href="https://meeshkan.github.io/http-types/">HTTP Types JSON Lines format</a>.
+ * Reader of {@link HttpExchange HTTP exchanges} in the <a href="https://meeshkan.github.io/http-types/">http-types JSON Lines format</a>.
  *
  * @see HttpExchangeWriter
  */
@@ -53,7 +53,7 @@ public final class HttpExchangeReader {
     }
 
     /**
-     * Read a single HTTP exchange from a JSON formatted string in the HTTP types format.
+     * Read a single HTTP exchange from a JSON formatted string in the http-types format.
      *
      * @param in the JSON representation of a single HTTP exchange
      * @return the parsed HTTP exchange
@@ -70,7 +70,7 @@ public final class HttpExchangeReader {
     }
 
     /**
-     * Read a single HTTP exchange from a JSON formatted string in the HTTP types format.
+     * Read a single HTTP exchange from a JSON formatted string in the http-types format.
      *
      * @param in the JSON representation of a single HTTP exchange
      * @return the parsed HTTP exchange
@@ -83,7 +83,7 @@ public final class HttpExchangeReader {
     }
 
     /**
-     * Read a single HTTP exchange from a JSON formatted string in the HTTP types format.
+     * Read a single HTTP exchange from a JSON formatted string in the http-types format.
      *
      * @param in the JSON representation of a single HTTP exchange
      * @return the parsed HTTP exchange
@@ -205,9 +205,9 @@ public final class HttpExchangeReader {
     }
 
     /**
-     * Parse a stream of HTTP exchanges from a HTTP Types JSON Lines formatted input.
+     * Parse a stream of HTTP exchanges from a http-types JSON Lines formatted input.
      *
-     * @param jsonLines the input in HTTP TYPES JSON Lines format
+     * @param jsonLines the input in http-types JSON Lines format
      * @return a stream of HTTP Exchanges defined by this archive
      * @see #fromJsonLines(Reader)
      * @see #fromJsonLines(InputStream)
@@ -222,9 +222,9 @@ public final class HttpExchangeReader {
     }
 
     /**
-     * Parse a stream of HTTP exchanges from a HTTP Types JSON Lines formatted input.
+     * Parse a stream of HTTP exchanges from a http-types JSON Lines formatted input.
      *
-     * @param in the input in HTTP TYPES JSON Lines format
+     * @param in the input in http-types JSON Lines format
      * @return a stream of HTTP Exchanges defined by this archive
      * @throws IOException if there is a I/O problem reading the input
      * @see #fromJsonLines(Reader)
@@ -235,9 +235,9 @@ public final class HttpExchangeReader {
     }
 
     /**
-     * Parse a stream of HTTP exchanges from a HTTP Types JSON Lines formatted input.
+     * Parse a stream of HTTP exchanges from a http-types JSON Lines formatted input.
      *
-     * @param reader the input in HTTP Types JSON Lines format
+     * @param reader the input in http-types JSON Lines format
      * @return a stream of HTTP Exchanges defined by this archive
      * @throws IOException if there is an I/O problem reading the input.
      * @see #fromJsonLines(InputStream)

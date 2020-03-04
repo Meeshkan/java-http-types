@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * HTTP request and response pair.
  * <p>
- * To work with serialization in the <a href="https://meeshkan.github.io/http-types/">HTTP Types</a> format, use use {@link HttpExchangeReader} and {@link HttpExchangeWriter}.
+ * To work with serialization in the <a href="https://meeshkan.github.io/http-types/">http-types</a> format, use use {@link HttpExchangeReader} and {@link HttpExchangeWriter}.
  * <p>
  * Use {@link Builder} to create instances manually.
  */
